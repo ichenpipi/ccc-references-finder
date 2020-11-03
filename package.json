@@ -1,0 +1,33 @@
+{
+  "name": "ccc-references-finder",
+  "version": "1.0.0-20201103",
+  "description": "一键快速查找资源的所有引用，可精确到预制体或场景中的节点上的组件和属性（不包括代码中的动态引用）。",
+  "author": "陈皮皮",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/引用查找器/查找当前选中资源": {
+      "message": "ccc-references-finder:find-current-selection",
+      "accelerator": "F6",
+      "icon": "/images/search.png"
+    },
+    "i18n:MAIN_MENU.package.title/引用查找器/设置": {
+      "message": "ccc-references-finder:open-panel"
+    }
+  },
+  "reload": {
+    "renderer": [
+      "panel/**/*"
+    ],
+    "ignore": [
+      "config.json",
+      "README.md"
+    ]
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "引用查找器",
+    "width": 500,
+    "height": 330
+  }
+}
