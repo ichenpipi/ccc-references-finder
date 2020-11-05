@@ -2,13 +2,21 @@
 
 ## 介绍
 
-[Cocos Creator 编辑器扩展] 一键快速查找资源的所有引用，可精确到预制体或场景中的节点上的组件和属性（不包括代码中的动态引用）。
+[Cocos Creator 编辑器扩展]
 
-如果此项目对你有帮助，请不要忘记 [![star](https://gitee.com/ifaswind/ccc-references-finder/badge/star.svg?theme=dark)](https://gitee.com/ifaswind/ccc-references-finder/stargazers)
+**一键快速查找资源的所有引用，可精确到预制体或场景中的节点上的组件和属性（不包括代码中的动态引用）。**
 
 
 
-*如有使用上的问题，可以在 gitee 仓库中提 issue 或者添加我的微信 `im_chenpipi` 并留言。*
+## 开源
+
+本扩展项目开源，仓库地址：[https://gitee.com/ifaswind/ccc-references-finder](https://gitee.com/ifaswind/ccc-references-finder)
+
+如果你觉得这个项目还不错，请不要忘记点 [![star](https://gitee.com/ifaswind/ccc-references-finder/badge/star.svg?theme=dark)](https://gitee.com/ifaswind/ccc-references-finder/stargazers)！
+
+
+
+*如有使用上的问题，可以在 Gitee 仓库中提 Issue 或者添加我的微信 `im_chenpipi` 并留言。*
 
 
 
@@ -22,7 +30,7 @@
 
 
 
-## 环境
+## 运行环境
 
 平台：Windows、macOS
 
@@ -30,15 +38,15 @@
 
 
 
-## 说明
-
-### 下载 & 安装
+## 下载 & 安装
 
 #### 扩展商店安装
 
 点击 Cocos Creator 编辑器顶部菜单栏中的 **[扩展] -> [扩展商店]** 即可打开扩展商店。
 
 在上方搜索栏中输入“**引用查找器**”并搜索就可以找到本插件，点进去直接安装即可（建议安装到全局）。
+
+![cocos-store](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/cocos-store.png)
 
 
 
@@ -55,7 +63,7 @@
 
 
 
-### 使用
+### 使用说明
 
 点击编辑器顶部菜单栏中的 **[扩展] -> [引用查找器] -> [设置]** 即可打开设置面板。
 
