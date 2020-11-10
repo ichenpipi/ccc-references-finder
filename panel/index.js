@@ -14,7 +14,7 @@ Editor.Panel.extend({
         return {
 
           expand: true,
-          showNode: true,
+          detail: true,
           hotkey: 'F6',
 
           isProcessing: false
@@ -32,17 +32,18 @@ Editor.Panel.extend({
 
           const config = {
             expand: this.expand,
-            showNode: this.showNode,
+            detail: this.detail,
             hotkey: this.hotkey
           };
+
           Editor.Ipc.sendToMain('ccc-references-finder:save-config', config, () => {
             this.isProcessing = false;
           });
         },
 
         /**
-        * 读取配置
-        */
+         * 读取配置
+         */
         readConfig() {
           Editor.Ipc.sendToMain('ccc-references-finder:read-config', (err, config) => {
             if (err || !config) return;

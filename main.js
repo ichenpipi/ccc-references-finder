@@ -1,5 +1,6 @@
 const Fs = require('fs');
 const Path = require('path');
+const ConfigManager = require('./config-manager');
 const FileUtil = require('./utils/file-util');
 const ObjectUtil = require('./utils/object-util');
 
@@ -12,10 +13,13 @@ module.exports = {
   expand: true,
 
   /** 结果精确到节点 */
-  showNode: true,
+  detail: true,
 
   load() {
-    this.readConfig(true);
+    // 读取配置
+    const config = ConfigManager.read(false);
+    this.expand = config.expand;
+    this.detail = config.detail;
   },
 
   unload() {
@@ -29,12 +33,14 @@ module.exports = {
     },
 
     'save-config'(event, config) {
-      this.saveConfig(config);
+      this.expand = config.expand;
+      this.detail = config.detail;
+      ConfigManager.save(config);
       event.reply(null, true);
     },
 
     'read-config'(event) {
-      const config = this.readConfig();
+      const config = ConfigManager.read(true);
       event.reply(null, config);
     },
 
@@ -49,57 +55,6 @@ module.exports = {
       }
     }
 
-  },
-
-  /**
-   * 保存配置
-   * @param {object} config 配置
-   */
-  saveConfig(config) {
-    // 自动展开结果
-    this.expand = config.expand;
-    this.showNode = config.showNode;
-    const configPath = Path.join(__dirname, 'config.json');
-    const configData = Fs.existsSync(configPath) ? JSON.parse(Fs.readFileSync(configPath)) : {};
-    if (configData.expand !== config.expand || configData.showNode !== config.showNode) {
-      configData.expand = config.expand;
-      configData.showNode = config.showNode;
-      Fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-    }
-    // 快捷键
-    const packagePath = Path.join(__dirname, 'package.json');
-    let packageData = JSON.parse(Fs.readFileSync(packagePath));
-    const item = packageData['main-menu']['i18n:MAIN_MENU.package.title/引用查找器/查找当前选中资源'];
-    if (item['accelerator'] !== config.hotkey) {
-      item['accelerator'] = config.hotkey;
-      Fs.writeFileSync(packagePath, JSON.stringify(packageData, null, 2));
-    }
-  },
-
-  /**
-   * 读取配置
-   */
-  readConfig(onlyGetConfig = false) {
-    // 自动展开结果
-    const configPath = Path.join(__dirname, 'config.json');
-    if (Fs.existsSync(configPath)) {
-      const config = JSON.parse(Fs.readFileSync(configPath));
-      this.expand = config.expand;
-      this.showNode = config.showNode;
-    }
-    if (onlyGetConfig) {
-      return;
-    }
-    // 快捷键
-    const packagePath = Path.join(__dirname, 'package.json');
-    const packageData = JSON.parse(Fs.readFileSync(packagePath));
-    // 返回配置
-    const config = {
-      expand: this.expand,
-      showNode: this.showNode,
-      hotkey: packageData['main-menu']['i18n:MAIN_MENU.package.title/引用查找器/查找当前选中资源']['accelerator']
-    }
-    return config;
   },
 
   /**
@@ -194,6 +149,7 @@ module.exports = {
                   if (type === 'cc.Label' && info.property === '_N$file') {
                     info.property = 'font';
                   } else {
+                    // 去除属性名的前缀
                     if (info.property.indexOf('_N$') !== -1) {
                       info.property = info.property.replace('_N$', '');
                     } else if (info.property.indexOf('_') === 0) {
@@ -288,7 +244,7 @@ module.exports = {
         nodeRefs.push(`　　　·　📺 [${result.type}] ${url}`);
         for (let j = 0; j < result.refs.length; j++) {
           nodeRefsCount++;
-          if (this.showNode) {
+          if (this.detail) {
             const ref = result.refs[j];
             let string = `　　　　　　　💾 [节点] ${ref.node}`;
             if (ref.component) {
@@ -327,20 +283,6 @@ module.exports = {
   },
 
   /**
-   * 预加载节点树
-   */
-  preloadNodeTree() {
-    const handler = (filePath, stats) => {
-      const extname = Path.extname(filePath);
-      if (extname === '.fire' || extname === '.scene' || extname === '.prefab') {
-        this.updateNodeTree(filePath);
-      }
-    }
-    const rootPath = Path.join(Editor.Project.path, 'assets');
-    FileUtil.map(rootPath, handler);
-  },
-
-  /**
    * 更新节点树
    * @param {string} filePath 文件路径
    */
@@ -366,6 +308,20 @@ module.exports = {
       this.nodeTrees[filePath] = this.convertToNodeTree(data);
     }
     return this.nodeTrees[filePath];
+  },
+
+  /**
+   * 预加载节点树（未使用）
+   */
+  preloadNodeTrees() {
+    const handler = (filePath, stats) => {
+      const extname = Path.extname(filePath);
+      if (extname === '.fire' || extname === '.scene' || extname === '.prefab') {
+        this.updateNodeTree(filePath);
+      }
+    }
+    const rootPath = Path.join(Editor.Project.path, 'assets');
+    FileUtil.map(rootPath, handler);
   },
 
   /**
