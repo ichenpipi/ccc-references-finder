@@ -86,44 +86,57 @@ module.exports = {
    * @param {string} uuid 
    */
   findViaUuid(uuid) {
-    const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
-    // 暂不查找文件夹
-    if (assetInfo.type === 'folder') {
-      Editor.log('[🔎]', '暂不支持查找文件夹', assetInfo.url);
+    // 是否为有效 uuid
+    if (!Editor.Utils.UuidUtils.isUuid(uuid)) {
+      Editor.log('[🔎]', '该 uuid 无效', uuid);
       return;
     }
-    // 处理文件路径 & 打印头部日志
-    const urlItems = assetInfo.url.replace('db://', '').split('/');
-    if (!urlItems[urlItems.length - 1].includes('.')) {
-      urlItems.splice(urlItems.length - 1);
-    }
-    Editor.log('[🔎]', '查找资源引用', urlItems.join('/'));
-    // 资源类型检查
-    const subUuids = [];
-    if (assetInfo.type === 'texture') {
-      // 纹理子资源
-      const subAssetInfos = Editor.assetdb.subAssetInfosByUuid(uuid);
-      if (subAssetInfos) {
-        for (let i = 0; i < subAssetInfos.length; i++) {
-          subUuids.push(subAssetInfos[i].uuid);
-        }
-        uuid = null;
+    // 获取资源信息
+    const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
+    if (assetInfo) {
+      // 暂不查找文件夹
+      if (assetInfo.type === 'folder') {
+        Editor.log('[🔎]', '暂不支持查找文件夹', assetInfo.url);
+        return;
       }
-    } else if (assetInfo.type === 'typescript' || assetInfo.type === 'javascript') {
-      // 脚本
-      uuid = Editor.Utils.UuidUtils.compressUuid(uuid);
-    }
-    // 查找
-    const results = uuid ? this.findReferences(uuid) : [];
-    if (subUuids.length > 0) {
-      for (let i = 0; i < subUuids.length; i++) {
-        const subResults = this.findReferences(subUuids[i]);
-        if (subResults.length > 0) {
-          results.push(...subResults);
+      // 处理文件路径 & 打印头部日志
+      const urlItems = assetInfo.url.replace('db://', '').split('/');
+      if (!urlItems[urlItems.length - 1].includes('.')) {
+        urlItems.splice(urlItems.length - 1);
+      }
+      Editor.log('[🔎]', '查找资源引用', urlItems.join('/'));
+      // 记录子资源 uuid
+      const subUuids = assetInfo ? [] : null;
+      // 资源类型检查
+      if (assetInfo.type === 'texture') {
+        // 纹理子资源
+        const subAssetInfos = Editor.assetdb.subAssetInfosByUuid(uuid);
+        if (subAssetInfos) {
+          for (let i = 0; i < subAssetInfos.length; i++) {
+            subUuids.push(subAssetInfos[i].uuid);
+          }
+          uuid = null;
+        }
+      } else if (assetInfo.type === 'typescript' || assetInfo.type === 'javascript') {
+        // 脚本
+        uuid = Editor.Utils.UuidUtils.compressUuid(uuid);
+      }
+      // 查找
+      const results = uuid ? this.findReferences(uuid) : [];
+      if (subUuids && subUuids.length > 0) {
+        for (let i = 0; i < subUuids.length; i++) {
+          const subResults = this.findReferences(subUuids[i]);
+          if (subResults.length > 0) {
+            results.push(...subResults);
+          }
         }
       }
+      this.printResult(results);
+    } else {
+      // 不存在的资源，直接查找 uuid
+      Editor.log('[🔎]', '查找资源引用', uuid);
+      this.printResult(this.findReferences(uuid));
     }
-    this.printResult(results);
   },
 
   /**

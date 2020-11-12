@@ -32,7 +32,7 @@
     "main": "panel.find/index.js",
     "type": "fixed-size",
     "title": "引用查找器",
-    "width": 400,
+    "width": 430,
     "height": 220
   },
   "panel.setting": {
