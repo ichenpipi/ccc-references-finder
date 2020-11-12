@@ -1,12 +1,12 @@
 <div class="container">
-    <h2>配置面板</h2>
+    <h2>设置</h2>
     <ui-box-container class="layout vertical left">
         <div>
-            <ui-prop name="自动展开查找结果" type="boolean" v-value="expand" tooltip="· 两种不同的结果打印方式，至于效果试试便知"></ui-prop>
-            <ui-prop name="结果精确到节点" type="boolean" v-value="detail" tooltip="· 引用结果是否精确到预制体或场景中的节点上的组件和属性（有的话）">
+            <ui-prop name="自动展开查找结果" type="boolean" v-value="expand" tooltip="两种不同的结果打印方式，至于效果试试便知"></ui-prop>
+            <ui-prop name="结果精确到节点" type="boolean" v-value="detail" tooltip="引用结果是否精确到预制体或场景中的节点上的组件和属性（有的话）">
             </ui-prop>
             <hr />
-            <ui-prop name="查找快捷键" tooltip="· 在资源管理器中选择资源后按下快捷键即可开始查找资源引用">
+            <ui-prop name="查找快捷键" tooltip="在资源管理器中选择资源后按下快捷键即可开始查找资源引用">
                 <ui-select class="flex-1" v-value="hotkey">
                     <option value="F5">F5</option>
                     <option value="F6">F6</option>
@@ -24,7 +24,7 @@
             </div>
         </div>
         <br>
-        <ui-button class="button blue big" v-disabled="isSaving" @click="onSaveBtnClick()">保存</ui-button>
+        <ui-button class="button blue big" v-disabled="isProcessing" @click="onSaveBtnClick()">保存</ui-button>
     </ui-box-container>
     <br>
 </div>

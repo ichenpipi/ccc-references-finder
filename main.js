@@ -28,8 +28,28 @@ module.exports = {
 
   messages: {
 
-    'open-panel'() {
-      Editor.Panel.open('ccc-references-finder');
+    'open-find-panel'() {
+      Editor.Panel.open('ccc-references-finder.find');
+    },
+
+    'open-setting-panel'() {
+      Editor.Panel.open('ccc-references-finder.setting');
+    },
+
+    'find-current-selection'() {
+      this.findCurrentSelection();
+    },
+
+    'find-via-uuid'(event, uuid) {
+      this.findViaUuid(uuid);
+      event.reply(null, null);
+    },
+
+    'asset-db:asset-changed'(event, info) {
+      if (info.type === 'scene' || info.type === 'prefab') {
+        const path = Editor.assetdb.uuidToFspath(info.uuid);
+        this.updateNodeTree(path);
+      }
     },
 
     'save-config'(event, config) {
@@ -42,17 +62,6 @@ module.exports = {
     'read-config'(event) {
       const config = ConfigManager.read(true);
       event.reply(null, config);
-    },
-
-    'find-current-selection'() {
-      this.findCurrentSelection();
-    },
-
-    'asset-db:asset-changed'(event, info) {
-      if (info.type === 'scene' || info.type === 'prefab') {
-        const path = Editor.assetdb.uuidToFspath(info.uuid);
-        this.updateNodeTree(path);
-      }
     }
 
   },
@@ -61,58 +70,66 @@ module.exports = {
    * 查找当前选中资源引用
    */
   findCurrentSelection() {
-    let uuids = Editor.Selection.curSelection('asset');
-
-    if (uuids.length === 0) {
-      Editor.log('[🔎]', '请先选中需要查找引用的资源！');
+    const curUuids = Editor.Selection.curSelection('asset');
+    if (curUuids.length === 0) {
+      Editor.log('[🔎]', '请先在资源管理器中选择需要查找引用的资源！');
       return;
     }
-
-    for (let i = 0; i < uuids.length; i++) {
-      let uuid = uuids[i];
-      const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
-      // Editor.log('assetInfo', assetInfo);
-      if (assetInfo.type === 'folder') {
-        continue;
-      }
-      // 头部日志
-      // Editor.log('　');
-      const url = Editor.assetdb.uuidToUrl(uuid).replace('db://', '').split('/');
-      if (!url[url.length - 1].includes('.')) {
-        url.splice(url.length - 1);
-      }
-      Editor.log('[🔎]', '查找资源引用', url.join('/'));
-      // 资源检查
-      const subUuids = [];
-      if (assetInfo.type === 'texture') {
-        // 纹理子资源
-        const subAssetInfos = Editor.assetdb.subAssetInfosByUuid(uuid);
-        if (subAssetInfos) {
-          for (let j = 0; j < subAssetInfos.length; j++) {
-            subUuids.push(subAssetInfos[j].uuid);
-          }
-        }
-      } else if (assetInfo.type === 'typescript' || assetInfo.type === 'javascript') {
-        // 脚本
-        uuid = Editor.Utils.UuidUtils.compressUuid(uuid);
-      }
-      // 查找
-      let results = this.findReferences(uuid);
-      if (subUuids.length > 0) {
-        for (let i = 0; i < subUuids.length; i++) {
-          const subResults = this.findReferences(subUuids[i]);
-          if (subResults.length > 0) {
-            results.push(...subResults);
-          }
-        }
-      }
-      this.printResult(results);
+    // 根据 uuid 查找
+    for (let i = 0; i < curUuids.length; i++) {
+      this.findViaUuid(curUuids[i]);
     }
+  },
+
+  /**
+   * 使用 uuid 进行查找
+   * @param {string} uuid 
+   */
+  findViaUuid(uuid) {
+    const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
+    // 暂不查找文件夹
+    if (assetInfo.type === 'folder') {
+      Editor.log('[🔎]', '暂不支持查找文件夹', assetInfo.url);
+      return;
+    }
+    // 处理文件路径 & 打印头部日志
+    const urlItems = assetInfo.url.replace('db://', '').split('/');
+    if (!urlItems[urlItems.length - 1].includes('.')) {
+      urlItems.splice(urlItems.length - 1);
+    }
+    Editor.log('[🔎]', '查找资源引用', urlItems.join('/'));
+    // 资源类型检查
+    const subUuids = [];
+    if (assetInfo.type === 'texture') {
+      // 纹理子资源
+      const subAssetInfos = Editor.assetdb.subAssetInfosByUuid(uuid);
+      if (subAssetInfos) {
+        for (let i = 0; i < subAssetInfos.length; i++) {
+          subUuids.push(subAssetInfos[i].uuid);
+        }
+        uuid = null;
+      }
+    } else if (assetInfo.type === 'typescript' || assetInfo.type === 'javascript') {
+      // 脚本
+      uuid = Editor.Utils.UuidUtils.compressUuid(uuid);
+    }
+    // 查找
+    const results = uuid ? this.findReferences(uuid) : [];
+    if (subUuids.length > 0) {
+      for (let i = 0; i < subUuids.length; i++) {
+        const subResults = this.findReferences(subUuids[i]);
+        if (subResults.length > 0) {
+          results.push(...subResults);
+        }
+      }
+    }
+    this.printResult(results);
   },
 
   /**
    * 查找引用
    * @param {string} uuid 
+   * @returns {object[]}
    */
   findReferences(uuid) {
     const results = [];
@@ -120,7 +137,6 @@ module.exports = {
       const extname = Path.extname(filePath);
       if (extname === '.fire' || extname === '.prefab' || extname === '.scene') {
         // 场景和预制体资源
-
         // 将资源数据转为节点树
         const nodeTree = this.getNodeTree(filePath);
 
@@ -134,7 +150,7 @@ module.exports = {
           const components = node['components'];
           if (components && components.length > 0) {
             for (let i = 0; i < components.length; i++) {
-              const info = this.getContainsDetail(components[i], uuid);
+              const info = this.getContainsInfo(components[i], uuid);
               if (info.contains) {
                 let type = components[i]['__type__'];
                 // 是否为脚本资源
@@ -192,8 +208,8 @@ module.exports = {
 
         // 保存当前文件引用结果
         if (_results.length > 0) {
-          const url = Editor.assetdb.fspathToUrl(filePath);
-          results.push({ type: typeMap[extname], fileUrl: url, refs: _results });
+          const fileUrl = Editor.assetdb.fspathToUrl(filePath);
+          results.push({ type: typeMap[extname], fileUrl: fileUrl, refs: _results });
         }
       } else if (extname === '.anim') {
         // 动画资源
@@ -201,17 +217,17 @@ module.exports = {
         const curveData = data['curveData'];
         const contains = ObjectUtil.containsValue(curveData, uuid);
         if (contains) {
-          const url = Editor.assetdb.fspathToUrl(filePath);
-          results.push({ type: typeMap[extname], fileUrl: url });
+          const fileUrl = Editor.assetdb.fspathToUrl(filePath);
+          results.push({ type: typeMap[extname], fileUrl: fileUrl });
         }
       } else if (extname === '.mtl' || filePath.indexOf('.fnt.meta') !== -1) {
         // 材质和字体资源
         const data = JSON.parse(Fs.readFileSync(filePath));
         const contains = ObjectUtil.containsValue(data, uuid);
         if (contains && !(data['uuid'] && data['uuid'] === uuid)) {
-          const url = Editor.assetdb.fspathToUrl(filePath);
+          const fileUrl = Editor.assetdb.fspathToUrl(filePath);
           const type = extname === '.mtl' ? '.mtl' : '.fnt.meta';
-          results.push({ type: typeMap[type], fileUrl: url });
+          results.push({ type: typeMap[type], fileUrl: fileUrl });
         }
       }
     }
@@ -297,6 +313,7 @@ module.exports = {
   /**
    * 获取节点树
    * @param {string} filePath 文件路径
+   * @returns {object}
    */
   getNodeTree(filePath) {
     if (!this.nodeTrees) {
@@ -327,6 +344,7 @@ module.exports = {
   /**
    * 将资源数据转为节点树
    * @param {object} data 元数据
+   * @returns {object}
    */
   convertToNodeTree(data) {
     /**
@@ -336,36 +354,36 @@ module.exports = {
      */
     const read = (node, id) => {
       const nodeData = Object.create(null);
-      const realNodeData = data[id];
+      const actualNodeData = data[id];
 
       // 基本信息
       nodeData['__id__'] = id;
-      nodeData['_name'] = realNodeData['_name'];
-      nodeData['__type__'] = realNodeData['__type__'];
+      nodeData['_name'] = actualNodeData['_name'];
+      nodeData['__type__'] = actualNodeData['__type__'];
 
       // 记录路径
       const parentPath = node['path'] ? node['path'] : (node['_name'] ? node['_name'] : null);
       nodeData['path'] = (parentPath ? parentPath + '/' : '') + nodeData['_name'];
 
       // 记录组件
-      const components = realNodeData['_components'];
+      const components = actualNodeData['_components'];
       if (components && components.length > 0) {
         nodeData['components'] = [];
         for (let i = 0; i < components.length; i++) {
-          const realComponent = data[components[i]['__id__']];
-          nodeData['components'].push(this.extractValidInfo(realComponent));
+          const actualComponent = data[components[i]['__id__']];
+          nodeData['components'].push(this.extractValidInfo(actualComponent));
         }
       }
 
       // 记录预制体引用
-      const prefab = realNodeData['_prefab'];
+      const prefab = actualNodeData['_prefab'];
       if (prefab) {
         const realPrefab = data[prefab['__id__']];
         nodeData['prefab'] = this.extractValidInfo(realPrefab);
       }
 
       // 记录子节点
-      const children = realNodeData['_children'];
+      const children = actualNodeData['_children'];
       if (children && children.length > 0) {
         nodeData['children'] = [];
         for (let i = 0; i < children.length; i++) {
@@ -406,6 +424,7 @@ module.exports = {
   /**
    * 提取有效信息（含有 uuid）
    * @param {object} data 元数据
+   * @returns {object}
    */
   extractValidInfo(data) {
     const info = Object.create(null);
@@ -429,16 +448,19 @@ module.exports = {
    * 获取对象中是否包含指定值以及相应属性名
    * @param {object} object 对象
    * @param {any} value 值
+   * @returns {{contains:boolean, property?:string}}
    */
-  getContainsDetail(object, value) {
-    let contains = false;
-    let property = null;
+  getContainsInfo(object, value) {
+    const result = {
+      contains: false,
+      property: null
+    }
     const search = (_object, parentKey) => {
       if (ObjectUtil.isObject(_object)) {
         for (const key in _object) {
           if (_object[key] === value) {
-            contains = true;
-            property = parentKey;
+            result.contains = true;
+            result.property = parentKey;
             return;
           }
           search(_object[key], key);
@@ -450,7 +472,7 @@ module.exports = {
       }
     }
     search(object, null);
-    return { contains, property };
+    return result;
   }
 
 }

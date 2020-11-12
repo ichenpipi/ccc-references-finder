@@ -33,7 +33,10 @@ const ConfigManager = {
      * @returns {{expand: boolean, detail: boolean, hotkey?:string}}
      */
     read(readHotKey) {
-        const config = Object.create(null);
+        const config = {
+            expand: true,
+            detail: true
+        };
         // 配置
         if (Fs.existsSync(configPath)) {
             const configData = JSON.parse(Fs.readFileSync(configPath));

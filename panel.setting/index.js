@@ -2,9 +2,9 @@ const Fs = require('fs');
 
 Editor.Panel.extend({
 
-  style: Fs.readFileSync(Editor.url('packages://ccc-references-finder/panel/index.css'), 'utf8'),
+  style: Fs.readFileSync(Editor.url('packages://ccc-references-finder/panel.setting/index.css'), 'utf8'),
 
-  template: Fs.readFileSync(Editor.url('packages://ccc-references-finder/panel/index.html'), 'utf8'),
+  template: Fs.readFileSync(Editor.url('packages://ccc-references-finder/panel.setting/index.html'), 'utf8'),
 
   ready() {
     const app = new window.Vue({
