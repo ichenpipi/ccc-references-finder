@@ -46,7 +46,7 @@ const FileUtil = {
     /**
      * 遍历文件/文件夹并执行函数
      * @param {Fs.PathLike} path 路径
-     * @param {(filePath: Fs.PathLike, stat: Fs.Stats)=>void} handler 处理函数
+     * @param {(filePath: Fs.PathLike, stat: Fs.Stats) => void} handler 处理函数
      */
     map(path, handler) {
         if (!Fs.existsSync(path)) return

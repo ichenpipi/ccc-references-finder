@@ -1,21 +1,45 @@
 {
   "name": "ccc-references-finder",
-  "version": "1.1.0-20201112",
+  "version": "1.2.0.20210405",
   "description": "一键快速查找资源的所有引用，可精确到预制体或场景中的节点上的组件和属性（不包括代码中的动态引用）。",
-  "author": "陈皮皮",
+  "author": "ifaswind（陈皮皮）",
+  "author-info": {
+    "wechat": "im_chenpipi",
+    "email": "952157129@qq.com",
+    "git-home": "https://gitee.com/ifaswind",
+    "official-account": "公众号「菜鸟小栈」"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/ifaswind/ccc-references-finder"
+  },
   "main": "main.js",
   "main-menu": {
-    "i18n:MAIN_MENU.package.title/引用查找器/查找当前选中资源": {
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.findSelected": {
       "message": "ccc-references-finder:find-current-selection",
       "accelerator": "F6",
       "icon": "/images/search.png"
     },
-    "i18n:MAIN_MENU.package.title/引用查找器/通过 uuid 查找": {
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.findUuid": {
       "message": "ccc-references-finder:open-find-panel"
     },
-    "i18n:MAIN_MENU.package.title/引用查找器/设置": {
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.setting": {
       "message": "ccc-references-finder:open-setting-panel"
     }
+  },
+  "panel.find": {
+    "main": "panel.find/index.js",
+    "type": "fixed-size",
+    "title": "i18n:ccc-references-finder.name",
+    "width": 500,
+    "height": 185
+  },
+  "panel.setting": {
+    "main": "panel.setting/index.js",
+    "type": "fixed-size",
+    "title": "i18n:ccc-references-finder.name",
+    "width": 500,
+    "height": 400
   },
   "reload": {
     "renderer": [
@@ -24,22 +48,8 @@
     ],
     "ignore": [
       "config.json",
-      "README.md",
-      "CHANGELOG.md"
+      "CHANGELOG.md",
+      "README.md"
     ]
-  },
-  "panel.find": {
-    "main": "panel.find/index.js",
-    "type": "fixed-size",
-    "title": "引用查找器",
-    "width": 430,
-    "height": 220
-  },
-  "panel.setting": {
-    "main": "panel.setting/index.js",
-    "type": "fixed-size",
-    "title": "引用查找器",
-    "width": 500,
-    "height": 295
   }
 }
