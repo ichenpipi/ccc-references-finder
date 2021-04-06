@@ -18,6 +18,12 @@ const PACKAGE_NAME = 'ccc-references-finder';
 const EXTENSION_NAME = '🔎';
 // const EXTENSION_NAME = translate('name');
 
+/** 主进程 AssetDB 实例 */
+const assetdb = Editor.assetdb;
+
+/** Uuid 工具 */
+const UuidUtils = Editor.Utils.UuidUtils;
+
 module.exports = {
 
   /**
@@ -85,7 +91,7 @@ module.exports = {
       const { type, uuid } = info;
       // 场景和预制体
       if (type === 'scene' || type === 'prefab') {
-        const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
+        const assetInfo = assetdb.assetInfoByUuid(uuid);
         // 排除内置资源
         if (assetInfo.url.startsWith('db://internal')) {
           return;
@@ -157,12 +163,12 @@ module.exports = {
    */
   findViaUuid(uuid) {
     // 是否为有效 uuid
-    if (!Editor.Utils.UuidUtils.isUuid(uuid)) {
+    if (!UuidUtils.isUuid(uuid)) {
       Editor.log(`[${EXTENSION_NAME}]`, translate('invalidUuid'), uuid);
       return;
     }
     // 获取资源信息
-    const assetInfo = Editor.assetdb.assetInfoByUuid(uuid);
+    const assetInfo = assetdb.assetInfoByUuid(uuid);
     if (assetInfo) {
       const url = assetInfo.url.replace('db://', '');
       // 暂不查找文件夹
@@ -181,7 +187,7 @@ module.exports = {
       // 资源类型检查
       if (assetInfo.type === 'texture') {
         // 纹理子资源
-        const subAssetInfos = Editor.assetdb.subAssetInfosByUuid(uuid);
+        const subAssetInfos = assetdb.subAssetInfosByUuid(uuid);
         if (subAssetInfos) {
           for (let i = 0; i < subAssetInfos.length; i++) {
             subUuids.push(subAssetInfos[i].uuid);
@@ -190,7 +196,7 @@ module.exports = {
         }
       } else if (assetInfo.type === 'typescript' || assetInfo.type === 'javascript') {
         // 脚本
-        uuid = Editor.Utils.UuidUtils.compressUuid(uuid);
+        uuid = UuidUtils.compressUuid(uuid);
       }
       // 查找
       const results = uuid ? this.findReferences(uuid) : [];
@@ -230,9 +236,9 @@ module.exports = {
         // 资源类型
         let type = components[i]['__type__'];
         // 是否为脚本资源
-        if (Editor.Utils.UuidUtils.isUuid(type)) {
-          const scriptUuid = Editor.Utils.UuidUtils.decompressUuid(type),
-            assetInfo = Editor.assetdb.assetInfoByUuid(scriptUuid);
+        if (UuidUtils.isUuid(type)) {
+          const scriptUuid = UuidUtils.decompressUuid(type),
+            assetInfo = assetdb.assetInfoByUuid(scriptUuid);
           type = Path.basename(assetInfo.url);
         }
         // 处理属性名称
@@ -308,7 +314,7 @@ module.exports = {
         if (refs.length > 0) {
           results.push({
             type: typeMap[extname],
-            fileUrl: Editor.assetdb.fspathToUrl(filePath),
+            fileUrl: assetdb.fspathToUrl(filePath),
             refs: refs
           });
         }
@@ -321,25 +327,26 @@ module.exports = {
         if (contains) {
           results.push({
             type: typeMap[extname],
-            fileUrl: Editor.assetdb.fspathToUrl(filePath)
+            fileUrl: assetdb.fspathToUrl(filePath)
           });
         }
       }
       // 材质和字体资源
-      else if (extname === '.mtl' || filePath.indexOf('.fnt.meta') !== -1) {
+      else if (extname === '.mtl' || filePath.endsWith('.fnt.meta')) {
         const data = JSON.parse(Fs.readFileSync(filePath)),
           contains = ObjectUtil.containsValue(data, uuid);
+        // 需排除自己
         if (contains && !(data['uuid'] === uuid)) {
           const _extname = (extname === '.mtl') ? '.mtl' : '.fnt.meta';
           results.push({
             type: typeMap[_extname],
-            fileUrl: Editor.assetdb.fspathToUrl(filePath)
+            fileUrl: assetdb.fspathToUrl(filePath)
           });
         }
       }
     };
     // 遍历资源目录下的文件
-    const assetsPath = Editor.url('db://assets/');
+    const assetsPath = Editor.url('db://assets');
     FileUtil.map(assetsPath, searchHandler);
     // Done
     return results;
@@ -355,11 +362,12 @@ module.exports = {
       Editor.log(`${'----'.repeat(36)}`);
       return;
     }
-    // 添加引用
-    const nodeRefs = [];
-    let nodeRefsCount = 0;
-    const assetRefs = [];
-    let assetRefsCount = 0;
+    const detail = this.detail;
+    // 处理引用信息
+    const nodeRefs = [],
+      assetRefs = [];
+    let nodeRefsCount = 0,
+      assetRefsCount = 0;
     for (let i = 0, l = results.length; i < l; i++) {
       const result = results[i],
         type = result.type,
@@ -369,7 +377,7 @@ module.exports = {
         const refs = result.refs;
         for (let j = 0, n = refs.length; j < n; j++) {
           nodeRefsCount++;
-          if (this.detail) {
+          if (detail) {
             const ref = refs[j];
             let item = `　　　　　　　${iconMap['node']} [${translate('node')}] ${ref.node}`;
             if (ref.component) {
@@ -401,8 +409,9 @@ module.exports = {
     // 打印到控制台
     if (this.expand) {
       // 逐行打印
+      const log = Editor.log;
       for (let i = 0, l = texts.length; i < l; i++) {
-        Editor.log(texts[i]);
+        log(texts[i]);
       }
     } else {
       // 单行打印
