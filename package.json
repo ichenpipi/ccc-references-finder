@@ -24,7 +24,8 @@
       "message": "ccc-references-finder:open-find-panel"
     },
     "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.setting": {
-      "message": "ccc-references-finder:open-setting-panel"
+      "message": "ccc-references-finder:open-setting-panel",
+      "icon": "/images/setting.png"
     }
   },
   "panel.find": {
