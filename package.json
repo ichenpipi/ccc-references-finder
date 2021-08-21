@@ -1,56 +1,44 @@
 {
   "name": "ccc-references-finder",
-  "version": "1.2.0.20210405",
-  "description": "一键快速查找资源的所有引用，可精确到预制体或场景中的节点上的组件和属性（不包括代码中的动态引用）。",
-  "author": "ifaswind（陈皮皮）",
-  "author-info": {
-    "wechat": "im_chenpipi",
+  "version": "1.3.0.20210929",
+  "description": "一键查找资源的所有引用，可精确到预制体或场景中的节点、组件和属性（不包括代码中的动态引用）。",
+  "author": {
+    "name": "陈皮皮 (ifaswind)",
     "email": "952157129@qq.com",
+    "url": "https://chenpipi.cn",
+    "wechat": "im_chenpipi",
     "git-home": "https://gitee.com/ifaswind",
     "official-account": "公众号「菜鸟小栈」"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://gitee.com/ifaswind/ccc-references-finder"
-  },
-  "main": "main.js",
+  "repository": "https://gitee.com/ifaswind/ccc-references-finder",
+  "license": "MIT",
+  "main": "src/main/index.js",
   "main-menu": {
-    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.findSelected": {
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.find": {
       "message": "ccc-references-finder:find-current-selection",
-      "accelerator": "F6",
-      "icon": "/images/search.png"
+      "icon": "/images/search.png",
+      "accelerator": "F6"
     },
-    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.findUuid": {
-      "message": "ccc-references-finder:open-find-panel"
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.settings": {
+      "message": "ccc-references-finder:open-settings-panel",
+      "icon": "/images/settings.png"
     },
-    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.setting": {
-      "message": "ccc-references-finder:open-setting-panel",
-      "icon": "/images/setting.png"
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/i18n:ccc-references-finder.check-update": {
+      "message": "ccc-references-finder:menu-check-update",
+      "icon": "/images/update.png"
+    },
+    "i18n:MAIN_MENU.package.title/i18n:ccc-references-finder.name/v1.3.0.20210929": {
+      "message": "ccc-references-finder:menu-version",
+      "icon": "/images/version.png"
     }
   },
-  "panel.find": {
-    "main": "panel.find/index.js",
-    "type": "fixed-size",
-    "title": "i18n:ccc-references-finder.name",
-    "width": 500,
-    "height": 185
-  },
-  "panel.setting": {
-    "main": "panel.setting/index.js",
-    "type": "fixed-size",
-    "title": "i18n:ccc-references-finder.name",
-    "width": 500,
-    "height": 400
-  },
   "reload": {
-    "renderer": [
-      "panel.find/**/*",
-      "panel.setting/**/*"
-    ],
+    "renderer": [],
     "ignore": [
       "config.json",
       "CHANGELOG.md",
-      "README.md"
+      "README.md",
+      "README.en.md"
     ]
   }
 }

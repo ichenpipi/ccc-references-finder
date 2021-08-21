@@ -4,7 +4,7 @@
  * @version 20210312
  * @see https://gitee.com/ifaswind/eazax-ccc/blob/master/declarations/editor.d.ts
  */
- declare module Editor {
+declare module Editor {
 
     /**
      * Log the normal message and show on the console. The method will send ipc message editor:console-log to all windows.

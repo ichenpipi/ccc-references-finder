@@ -1,5 +1,7 @@
 /**
  * 对象工具
+ * @author 陈皮皮 (ifaswind)
+ * @version 20210929
  */
 const ObjectUtil = {
 
@@ -14,12 +16,12 @@ const ObjectUtil = {
     /**
      * 对象中是否包含指定的属性
      * @param {object} object 对象
-     * @param {any} name 属性名
+     * @param {string} name 属性名
      */
     containsProperty(object, name) {
         let result = false;
         const search = (_object) => {
-            if (this.isObject(_object)) {
+            if (ObjectUtil.isObject(_object)) {
                 for (const key in _object) {
                     if (key == name) {
                         result = true;
@@ -28,7 +30,7 @@ const ObjectUtil = {
                     search(_object[key]);
                 }
             } else if (Array.isArray(_object)) {
-                for (let i = 0; i < _object.length; i++) {
+                for (let i = 0, l = _object.length; i < l; i++) {
                     search(_object[i]);
                 }
             }
@@ -45,7 +47,7 @@ const ObjectUtil = {
     containsValue(object, value) {
         let result = false;
         const search = (_object) => {
-            if (this.isObject(_object)) {
+            if (ObjectUtil.isObject(_object)) {
                 for (const key in _object) {
                     if (_object[key] === value) {
                         result = true;
@@ -54,15 +56,15 @@ const ObjectUtil = {
                     search(_object[key]);
                 }
             } else if (Array.isArray(_object)) {
-                for (let i = 0; i < _object.length; i++) {
+                for (let i = 0, l = _object.length; i < l; i++) {
                     search(_object[i]);
                 }
             }
         }
         search(object);
         return result;
-    }
+    },
 
-}
+};
 
 module.exports = ObjectUtil;
