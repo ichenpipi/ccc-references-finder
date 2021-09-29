@@ -24,9 +24,7 @@ If you like this project, don't forget to star [![star](https://gitee.com/ifaswi
 
 ![screenshot-2](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/screenshot-2.png)
 
-![find-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/find-panel.png)
-
-![setting-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/setting-panel.png)
+![settings-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/settings-panel.png)
 
 
 
@@ -47,6 +45,8 @@ You can find this extension in Cocos Store now, click on *Extension -> Cocos Sto
 Enter "**References Finder**" in the search bar, find it and then install it.
 
 ![cocos-store](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/cocos-store.png)
+
+*References Finder: [https://store.cocos.com/app/detail/2531](https://store.cocos.com/app/detail/2531)*
 
 
 
@@ -75,12 +75,12 @@ For example, on my Windows computer, the full path of `package.json` file should
 
 
 
-### Setting
+### Settings
 
 Click on *Extension -> References Finder -> Setting* option to open the setting panel.
 
-- **Expand Result**: Two different way to show the result
-- **More Detail**: Show reference detail of nodes
+- **Show Details**: Show more details(node, component, property)
+- **Fold Result**: Fold result in one log
 
 In the **Hotkey** option, you can choose a hotkey(shortcut, for finding references of current selected asset) in preset list, or you can customize one in **Custom** option by yourself.
 

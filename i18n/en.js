@@ -10,7 +10,7 @@ module.exports = {
     'local-version': 'Local version: ',
     'latest-version': 'Latest version: ',
     'git-releases': 'Releases: https://gitee.com/ifaswind/ccc-references-finder/releases',
-    'cocos-store': 'Cocos Store: http://store.cocos.com/app/detail/2531',
+    'cocos-store': 'Cocos Store: https://store.cocos.com/app/detail/2531',
     // main
     'please-select-assets': 'Please select asset(s) in Asset Panel first',
     'invalid-uuid': 'Invalid uuid',

@@ -10,7 +10,7 @@ module.exports = {
     'local-version': '本地版本：',
     'latest-version': '最新版本：',
     'git-releases': '发行版：https://gitee.com/ifaswind/ccc-references-finder/releases',
-    'cocos-store': 'Cocos 商店：http://store.cocos.com/app/detail/2531',
+    'cocos-store': 'Cocos 商店：https://store.cocos.com/app/detail/2531',
     // main
     'please-select-assets': '请先在资源管理器中选择需要查找引用的资源',
     'invalid-uuid': '无效的 uuid',

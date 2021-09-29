@@ -24,9 +24,7 @@
 
 ![screenshot-2](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/screenshot-2.png)
 
-![find-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/find-panel.png)
-
-![setting-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/setting-panel.png)
+![settings-panel](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/settings-panel.png)
 
 
 
@@ -44,9 +42,11 @@
 
 本扩展已上架 Cocos 商店，点击 Cocos Creator 编辑器顶部菜单栏中的 *扩展 -> 扩展商店* 即可打开扩展商店。
 
-在上方搜索栏中输入“**引用查找器**”并搜索就可以找到本插件，点进去直接安装即可（建议安装到全局）。
+在页面上方的搜索栏中搜索“**引用查找器**”就可以找到本插件，进入详情页即可直接安装（建议安装到全局）。
 
 ![cocos-store](https://gitee.com/ifaswind/image-storage/raw/master/repositories/ccc-references-finder/cocos-store.png)
+
+*引用查找器：[https://store.cocos.com/app/detail/2531](https://store.cocos.com/app/detail/2531)*
 
 
 
