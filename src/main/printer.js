@@ -20,16 +20,6 @@ const ICON_MAP = {
 const Printer = {
 
     /**
-     * 打印多个结果至控制台
-     * @param {object[]} results 
-     */
-    printResults(results) {
-        for (let i = 0; i < results.length; i++) {
-            Printer.printResult(results[i]);
-        }
-    },
-
-    /**
      * 打印结果至控制台
      * @param {object} result 
      */

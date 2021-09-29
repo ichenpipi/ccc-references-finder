@@ -59,7 +59,7 @@ And then unzip the package:
 - Windows: Unzip to `C:\Users\${your username}\.CocosCreator\packages\`
 - macOS: Unzip to `~/.CocosCreator/packages/`
 
-For example, on my Windows computer, the full path of `main.js` file should be `C:\Users\Shaun\.CocosCreator\packages\ccc-references-finder\main.js`.
+For example, on my Windows computer, the full path of `package.json` file should be `C:\Users\Shaun\.CocosCreator\packages\ccc-references-finder\package.json`.
 
 
 
@@ -72,14 +72,6 @@ For example, on my Windows computer, the full path of `main.js` file should be `
 2. Press the hotkey (The default is `F6`) or click on *Extension -> References Finder -> Find Selected* option to find references.
 
 3. Then all references of asset would be printed on Console Panel.
-
-
-
-### Find via Uuid
-
-Click on *Extension -> References Finder -> Find via Uuid* option to open this panel.
-
-In this panel, you can enter the uuid of asset, then find all references of that asset.
 
 
 

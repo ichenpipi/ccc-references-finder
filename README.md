@@ -4,7 +4,7 @@
 
 [Cocos Creator 编辑器扩展]
 
-**一键快速查找任意资源的所有引用，对于预制体或场景的引用还可以精确到节点上的组件和属性。**
+**一键查找资源的所有引用，可精确到预制体或场景中的节点、组件和属性（不包括代码中的动态引用）。**
 
 
 
@@ -59,7 +59,7 @@
 - Windows：解压到 `C:\Users\${你的用户名}\.CocosCreator\packages\` 目录下
 - macOS：解压到 `~/.CocosCreator/packages/` 目录下
 
-以 Windows 为例，扩展的 `main.js` 文件在我的电脑上的完整目录为 `C:\Users\Shaun\.CocosCreator\packages\ccc-references-finder\main.js`。
+以 Windows 为例，扩展的 `package.json` 文件在我的电脑上的完整目录为 `C:\Users\Shaun\.CocosCreator\packages\ccc-references-finder\package.json`。
 
 
 
@@ -70,14 +70,6 @@
 安装本扩展后，在资源管理器中选中任意资源，按下快捷键（默认为 `F6`）即可获取该资源的所有引用（不包括代码中的动态引用），结果将在控制台中以文本的方式打印出来。
 
 > 查找快捷键可进入扩展的设置面板进行修改
-
-
-
-### 通过 uuid 查找
-
-点击编辑器顶部菜单栏中的 *扩展 -> 引用查找器 -> 通过 uuid 查找* 即可打开查找面板。
-
-输入资源的 uuid 后点击“查找”按钮即可获取对应资源的所有引用。
 
 
 
