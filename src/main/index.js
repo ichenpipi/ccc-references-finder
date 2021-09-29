@@ -47,10 +47,10 @@ async function findCurrentSelection() {
             assetInfo = EditorAPI.assetInfoByUuid(uuid),
             shortUrl = assetInfo.url.replace('db://', '');
         // 查找引用
-        print('log', `${translate('find-asset-refs')} ${shortUrl}`);
+        print('log', '🔍', `${translate('find-asset-refs')} ${shortUrl}`);
         const refs = await Finder.findByUuid(uuid);
         if (refs.length === 0) {
-            print('log', `${translate('no-refs')} ${shortUrl}`);
+            print('log', '📂', `${translate('no-refs')} ${shortUrl}`);
             continue;
         }
         // 打印结果
@@ -62,6 +62,10 @@ async function findCurrentSelection() {
             refs: refs,
         });
     }
+}
+
+function getSelection() {
+
 }
 
 /**

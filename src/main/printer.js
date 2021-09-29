@@ -92,11 +92,11 @@ const Printer = {
         // 打印到控制台
         if (printFolding) {
             // 单行打印
-            texts.unshift(`${translate('result')} >>>`);
+            texts.unshift(`🗂 ${translate('result')} >>>`);
             print('log', texts.join('\n'));
         } else {
             // 逐行打印
-            print(translate('result'));
+            print('log', translate('result'));
             for (let i = 0, l = texts.length; i < l; i++) {
                 pureWithoutTitle(`　　${texts[i]}`);
             }
