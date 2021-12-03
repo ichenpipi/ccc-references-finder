@@ -41,8 +41,8 @@ const Finder = {
             // 记录子资源 uuid
             const subAssetUuids = [];
             // 资源类型检查
-            if (assetInfo.type === 'texture') {
-                // 纹理子资源
+            if (assetInfo.type === 'texture' || assetInfo.type === 'fbx') {
+                // 纹理、模型子资源
                 const subAssetInfos = EditorAPI.subAssetInfosByUuid(uuid);
                 if (subAssetInfos && subAssetInfos.length > 0) {
                     for (let i = 0; i < subAssetInfos.length; i++) {
