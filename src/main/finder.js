@@ -82,6 +82,7 @@ const Finder = {
      * @returns {Promise<{ type: string, url: string, refs?: object[]}[]>}
      */
     async findRefs(uuid) {
+        const assetInfo = EditorAPI.assetInfoByUuid(uuid);
         const result = [];
         // 文件处理函数
         const handler = async (path, stats) => {
@@ -131,6 +132,37 @@ const Finder = {
                         type: ASSET_TYPE_MAP[_ext],
                         url: EditorAPI.fspathToUrl(path),
                     });
+                }
+            } else if (ext === ".fbx" || ext === ".FBX") {
+                try {
+                    if (assetInfo.type !== "texture") {
+                        return;
+                    }
+                    //判断模型中的材质是否引用了 纹理
+                    const fbxMeta = await FileUtil.readFile(path + ".meta", { encoding: "utf-8" });
+                    /**
+                     * 用以查找 .mtl => dataAsSubAsset 是否包含uuid 
+                     * dataAsSubAsset 本身是字符串，就不再另做解析了，uuid 匹配可以的
+                     */
+                    if (fbxMeta.indexOf(uuid) === -1) {
+                        if (fbxMeta.indexOf(`"dataAsSubAsset": null,`) === -1) {
+                            //没有引用默认资源了，不继续查找
+                            return
+                        }
+                        //材质引用了默认纹理，读取fbx，匹配纹理资源名
+                        const data = await FileUtil.readFile(path, { encoding: "utf-8" });
+                        if (data.indexOf(basename(assetInfo.path)) === -1) {
+                            //模型中雀食未引用这个纹理
+                            return;
+                        }
+                    }
+                    result.push({
+                        type: ext,
+                        url: EditorAPI.fspathToUrl(path)
+                    });
+                } catch (error) {
+                    // 编辑器很坑，如果报错，不会打印。try 保证我们的提交不影响插件原来逻辑，并且有报错使用者也能反馈
+                    Editor.error(error)
                 }
             }
         };
