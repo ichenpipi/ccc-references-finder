@@ -117,7 +117,7 @@ const Finder = {
                         url: EditorAPI.fspathToUrl(path),
                     });
                 }
-            } else if (ext === '.mtl' || path.endsWith('.fnt.meta')) {
+            } else if (ext === '.mtl' || path.endsWith('.fnt.meta') || path.endsWith('.labelatlas.meta')) {
                 // 材质和字体资源
                 const data = JSON.parse(await FileUtil.readFile(path));
                 // 需排除自己
@@ -127,7 +127,14 @@ const Finder = {
                 // 是否引用
                 const contains = containsValue(data, uuid);
                 if (contains) {
-                    const _ext = (ext === '.mtl') ? '.mtl' : '.fnt.meta';
+                    let _ext = ext;
+                    if (ext === '.mtl') {
+                        _ext = '.mtl';
+                    } else if (path.endsWith('.fnt.meta')) {
+                        _ext = '.fnt.meta';
+                    }else if(path.endsWith('.labelatlas.meta')){
+                        _ext = '.labelatlas.meta';
+                    }
                     result.push({
                         type: ASSET_TYPE_MAP[_ext],
                         url: EditorAPI.fspathToUrl(path),
